@@ -1,3 +1,6 @@
+mod color;
+mod vec3;
+
 fn main() {
     const IMAGE_WIDTH: u32 = 256;
     const IMAGE_HEIGHT: u32 = 256;
@@ -9,11 +12,8 @@ fn main() {
             let g: f32 = j as f32 / IMAGE_HEIGHT as f32;
             let b: f32 = 0.25;
 
-            let ir: u32 = (255.999 * r) as u32;
-            let ig: u32 = (255.999 * g) as u32;
-            let ib: u32 = (255.999 * b) as u32;
-
-            println!("{} {} {}", ir, ig, ib);
+            let pixel = color::Color::New(r, g, b);
+            color::write_color(&pixel);
         }
     }
 }
