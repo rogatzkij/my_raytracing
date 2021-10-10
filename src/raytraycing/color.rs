@@ -14,11 +14,17 @@ impl Color {
     }
 }
 
-// TODO: rewrite
-pub fn write_color(pixel: &Color) {
-    let ir: u32 = (255.999 * pixel.r()) as u32;
-    let ig: u32 = (255.999 * pixel.g()) as u32;
-    let ib: u32 = (255.999 * pixel.b()) as u32;
-
-    println!("{} {} {}", ir, ig, ib);
+pub fn write_color(
+    img: &mut image::ImageBuffer<image::Rgb<u8>, std::vec::Vec<u8>>,
+    x: u32,
+    y: u32,
+    pixel_color: &Color,
+) {
+    let pixel = img.get_pixel_mut(x, y);
+    let image::Rgb(data) = *pixel;
+    *pixel = image::Rgb([
+        (pixel_color.r() * 255.999) as u8,
+        (pixel_color.g() * 255.999) as u8,
+        (pixel_color.b() * 255.999) as u8,
+    ]);
 }

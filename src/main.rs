@@ -1,6 +1,6 @@
 mod raytraycing;
 
-use image::{Pixel, Rgba, RgbaImage};
+use image;
 
 use raytraycing::color::{write_color, Color};
 use raytraycing::point3::{dot, Point3};
@@ -9,7 +9,7 @@ use raytraycing::ray::{ray_color, Ray};
 fn main() {
     // Image
     const ASPECT_RATIO: f32 = 16.0 / 9.0;
-    const IMAGE_WIDTH: u32 = 1024;
+    const IMAGE_WIDTH: u32 = 2048;
     const IMAGE_HEIGHT: u32 = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as u32;
     // Objects
     let sphere_center = &Point3::New(0.0, 0.0, -1.0);
@@ -42,13 +42,9 @@ fn main() {
                 pixel_color = ray_color(ray);
             }
 
-            let pixel = imgbuf.get_pixel_mut(i, j);
-            let image::Rgb(data) = *pixel;
-            *pixel = image::Rgb([
-                (pixel_color.r() * 255.999) as u8,
-                (pixel_color.g() * 255.999) as u8,
-                (pixel_color.b() * 255.999) as u8,
-            ]);
+            let x: u32 = i;
+            let y: u32 = IMAGE_HEIGHT - 1 - j;
+            write_color(&mut imgbuf, x, y, &pixel_color);
         }
     }
     imgbuf.save("picture.png").unwrap();
