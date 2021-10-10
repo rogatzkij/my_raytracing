@@ -14,6 +14,7 @@ impl Color {
     }
 }
 
+// TODO: rewrite
 pub fn write_color(pixel: &Color) {
     let ir: u32 = (255.999 * pixel.r()) as u32;
     let ig: u32 = (255.999 * pixel.g()) as u32;
