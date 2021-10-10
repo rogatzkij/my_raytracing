@@ -2,6 +2,7 @@ use super::color::Color;
 use super::point3::Point3;
 use super::vec3::{unit_vector, Vec3};
 
+#[derive(Copy, Clone)]
 pub struct Ray {
     pub orig: Point3,
     pub dir: Vec3,
@@ -25,8 +26,8 @@ impl Ray {
     }
 }
 
-pub fn ray_color(r: Ray) -> Color {
-    let unit_direction: Vec3 = unit_vector(r.direction());
+pub fn ray_color(ray: &Ray) -> Color {
+    let unit_direction: Vec3 = unit_vector(ray.direction());
     let t = 0.5 * (unit_direction.y() + 1.0);
 
     return Color::New(1.0, 1.0, 1.0) * (1.0 - t) + Color::New(0.5, 0.7, 1.0) * t;
