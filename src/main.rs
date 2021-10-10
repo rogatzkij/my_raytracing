@@ -1,5 +1,4 @@
-mod color;
-mod vec3;
+mod raytraycing;
 
 fn main() {
     const IMAGE_WIDTH: u32 = 256;
@@ -12,8 +11,8 @@ fn main() {
             let g: f32 = j as f32 / IMAGE_HEIGHT as f32;
             let b: f32 = 0.25;
 
-            let pixel = color::Color::New(r, g, b);
-            color::write_color(&pixel);
+            let pixel = raytraycing::color::Color::New(r, g, b);
+            raytraycing::color::write_color(&pixel);
         }
     }
 }
