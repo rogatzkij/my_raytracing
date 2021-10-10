@@ -1,4 +1,6 @@
-pub type Color = super::vec3::Vec3;
+use super::vec3::Vec3;
+
+pub type Color = Vec3;
 
 impl Color {
     pub fn r(&self) -> f32 {

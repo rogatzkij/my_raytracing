@@ -1,4 +1,6 @@
-pub type Point3 = super::vec3::Vec3;
+use super::vec3::Vec3;
+
+pub type Point3 = Vec3;
 
 impl Point3 {
     pub fn x(&self) -> f32 {
