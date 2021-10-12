@@ -9,20 +9,21 @@ use raytraycing::ray::{ray_color, Ray};
 fn main() {
     // Image
     const ASPECT_RATIO: f32 = 16.0 / 9.0;
-    const IMAGE_WIDTH: u32 = 2048;
+    const IMAGE_WIDTH: u32 = 1024;
     const IMAGE_HEIGHT: u32 = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as u32;
     // Objects
-    let sphere_center = &Point3::New(0.0, 0.0, -1.0);
+    let sphere_center = Point3::new(0.0, 0.0, -1.0);
+    let sphere_radius = 0.5;
     // Camera
     const VIEWPORT_HEIGHT: f32 = 2.0;
     const VIEWPORT_WIDTH: f32 = ASPECT_RATIO * VIEWPORT_HEIGHT;
     const FOCAL_LENGTH: f32 = 1.0;
 
-    let ORIGIN = Point3::New(0.0, 0.0, 0.0);
-    let HORIZONTAL = Point3::New(VIEWPORT_WIDTH, 0.0, 0.0);
-    let VERTICAL = Point3::New(0.0, VIEWPORT_HEIGHT, 0.0);
+    let ORIGIN = Point3::new(0.0, 0.0, 0.0);
+    let HORIZONTAL = Point3::new(VIEWPORT_WIDTH, 0.0, 0.0);
+    let VERTICAL = Point3::new(0.0, VIEWPORT_HEIGHT, 0.0);
     let LOWER_LEFT_CORNER =
-        ORIGIN - HORIZONTAL / 2.0 - VERTICAL / 2.0 - Point3::New(0.0, 0.0, FOCAL_LENGTH);
+        ORIGIN - HORIZONTAL / 2.0 - VERTICAL / 2.0 - Point3::new(0.0, 0.0, FOCAL_LENGTH);
 
     // Build image
     let mut imgbuf = image::ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -32,14 +33,14 @@ fn main() {
             let u = i as f32 / (IMAGE_WIDTH - 1) as f32;
             let v = j as f32 / (IMAGE_HEIGHT - 1) as f32;
 
-            let ray = &Ray::New(
+            let ray = Ray::new(
                 ORIGIN,
                 LOWER_LEFT_CORNER + HORIZONTAL * u + VERTICAL * v - ORIGIN,
             );
 
-            let mut pixel_color = Color::New(1.0, 0.0, 0.0);
-            if !hit_sphere(sphere_center, 0.5, ray) {
-                pixel_color = ray_color(ray);
+            let mut pixel_color = Color::new(1.0, 0.0, 0.0);
+            if !hit_sphere(&sphere_center, sphere_radius, &ray) {
+                pixel_color = ray_color(&ray);
             }
 
             let x: u32 = i;
@@ -52,12 +53,12 @@ fn main() {
 }
 
 fn hit_sphere(center: &Point3, radius: f32, ray: &Ray) -> bool {
-    let oc = &(ray.origin() - *center);
-    let direction = &ray.direction();
+    let oc = ray.origin() - *center;
+    let direction = ray.direction();
 
-    let a: f32 = dot(direction, direction);
-    let b: f32 = 2.0 * dot(oc, direction);
-    let c: f32 = dot(oc, oc) - radius * radius;
+    let a: f32 = dot(&direction, &direction);
+    let b: f32 = 2.0 * dot(&oc, &direction);
+    let c: f32 = dot(&oc, &oc) - radius * radius;
 
     let discriminant: f32 = b * b - 4.0 * a * c;
     return discriminant > 0.0;

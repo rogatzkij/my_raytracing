@@ -4,13 +4,13 @@ pub type Color = Vec3;
 
 impl Color {
     pub fn r(&self) -> f32 {
-        return self.e.0;
+        return self.x();
     }
     pub fn g(&self) -> f32 {
-        return self.e.1;
+        return self.y();
     }
     pub fn b(&self) -> f32 {
-        return self.e.2;
+        return self.z();
     }
 }
 
