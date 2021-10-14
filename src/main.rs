@@ -38,8 +38,12 @@ fn main() {
                 LOWER_LEFT_CORNER + HORIZONTAL * u + VERTICAL * v - ORIGIN,
             );
 
-            let mut pixel_color = Color::new(1.0, 0.0, 0.0);
-            if !hit_sphere(&sphere_center, sphere_radius, &ray) {
+            let t: f32 = hit_sphere(&sphere_center, sphere_radius, &ray);
+            let pixel_color: Color;
+            if t > 0.0 {
+                let n: Point3 = ray.at(t) - Point3::new(0.0, 0.0, -1.0);
+                pixel_color = Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0) * 0.5;
+            } else {
                 pixel_color = ray_color(&ray);
             }
 
@@ -52,7 +56,7 @@ fn main() {
     println!("done!");
 }
 
-fn hit_sphere(center: &Point3, radius: f32, ray: &Ray) -> bool {
+fn hit_sphere(center: &Point3, radius: f32, ray: &Ray) -> f32 {
     let oc = ray.origin() - *center;
     let direction = ray.direction();
 
@@ -61,5 +65,8 @@ fn hit_sphere(center: &Point3, radius: f32, ray: &Ray) -> bool {
     let c: f32 = dot(&oc, &oc) - radius * radius;
 
     let discriminant: f32 = b * b - 4.0 * a * c;
-    return discriminant > 0.0;
+    if discriminant > 0.0 {
+        return -b * discriminant.sqrt() / 2.0 * a;
+    }
+    return -1.0;
 }
