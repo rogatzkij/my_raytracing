@@ -6,6 +6,8 @@ use raytraycing::color::{write_color, Color};
 use raytraycing::point3::{dot, Point3};
 use raytraycing::ray::{ray_color, Ray};
 
+use raytraycing::hittable_list::HittableList;
+
 fn main() {
     // Image
     const ASPECT_RATIO: f32 = 16.0 / 9.0;
@@ -54,6 +56,8 @@ fn main() {
     }
     imgbuf.save("picture.png").unwrap();
     println!("done!");
+
+    HittableList::new();
 }
 
 fn hit_sphere(center: &Point3, radius: f32, ray: &Ray) -> f32 {
