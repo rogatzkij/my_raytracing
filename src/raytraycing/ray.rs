@@ -1,4 +1,6 @@
 use super::color::Color;
+use super::hittable::{HitRecord, Hittable};
+use super::hittable_list::HittableList;
 use super::point3::Point3;
 use super::vec3::{unit_vector, Vec3};
 
@@ -26,7 +28,14 @@ impl Ray {
     }
 }
 
-pub fn ray_color(ray: &Ray) -> Color {
+pub fn ray_color(ray: &Ray, world: &HittableList) -> Color {
+    match world.hit(ray, 0.0, f32::INFINITY, &HitRecord::default()) {
+        Some(temp_rec) => {
+            return (temp_rec.normal + Color::new(1.0, 1.0, 1.0)) * 0.5;
+        }
+        None => {}
+    }
+
     let unit_direction: Vec3 = unit_vector(ray.direction());
     let t = 0.5 * (unit_direction.y() + 1.0);
 

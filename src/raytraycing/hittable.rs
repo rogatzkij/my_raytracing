@@ -14,6 +14,8 @@ impl HitRecord {
         self.front_face = dot(&r.direction(), outward_normal) < 0.0;
 
         if self.front_face {
+            self.normal = *outward_normal;
+        } else {
             self.normal = *outward_normal * -1.0;
         }
     }

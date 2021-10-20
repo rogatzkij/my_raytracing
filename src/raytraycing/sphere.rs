@@ -4,8 +4,8 @@ use super::ray;
 use super::point3::{dot, Point3};
 
 pub struct Sphere {
-    center: Point3,
-    radius: f32,
+    pub center: Point3,
+    pub radius: f32,
 }
 
 impl Sphere {
@@ -25,7 +25,7 @@ impl Hittable for Sphere {
         let half_b = dot(&oc, &r.direction());
         let c = oc.length_squared() - self.radius * self.radius;
 
-        let discriminant: f32 = half_b - a * c;
+        let discriminant: f32 = half_b * half_b - a * c;
         if discriminant < 0.0 {
             return None;
         };
@@ -45,7 +45,7 @@ impl Hittable for Sphere {
             p: r.at(rec.t),
             normal: (rec.p - self.center) / self.radius,
             t: root,
-            front_face: true,
+            front_face: false,
         };
         result.set_face_normal(r, &outward_normal);
 

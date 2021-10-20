@@ -2,20 +2,26 @@ mod raytraycing;
 
 use image;
 
-use raytraycing::color::{write_color, Color};
-use raytraycing::point3::{dot, Point3};
+use raytraycing::color::write_color;
+use raytraycing::point3::Point3;
 use raytraycing::ray::{ray_color, Ray};
 
 use raytraycing::hittable_list::HittableList;
+use raytraycing::sphere::Sphere;
 
 fn main() {
     // Image
     const ASPECT_RATIO: f32 = 16.0 / 9.0;
-    const IMAGE_WIDTH: u32 = 1024;
+    const IMAGE_WIDTH: u32 = 800;
     const IMAGE_HEIGHT: u32 = (IMAGE_WIDTH as f32 / ASPECT_RATIO) as u32;
-    // Objects
-    let sphere_center = Point3::new(0.0, 0.0, -1.0);
-    let sphere_radius = 0.5;
+    // World
+    let sphere = Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5);
+    let earth = Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0);
+
+    let mut world = HittableList::new();
+    world.add(Box::new(sphere));
+    world.add(Box::new(earth));
+
     // Camera
     const VIEWPORT_HEIGHT: f32 = 2.0;
     const VIEWPORT_WIDTH: f32 = ASPECT_RATIO * VIEWPORT_HEIGHT;
@@ -35,22 +41,13 @@ fn main() {
             let u = i as f32 / (IMAGE_WIDTH - 1) as f32;
             let v = j as f32 / (IMAGE_HEIGHT - 1) as f32;
 
+            let x: u32 = i;
+            let y: u32 = IMAGE_HEIGHT - 1 - j;
             let ray = Ray::new(
                 ORIGIN,
                 LOWER_LEFT_CORNER + HORIZONTAL * u + VERTICAL * v - ORIGIN,
             );
-
-            let t: f32 = hit_sphere(&sphere_center, sphere_radius, &ray);
-            let pixel_color: Color;
-            if t > 0.0 {
-                let n: Point3 = ray.at(t) - Point3::new(0.0, 0.0, -1.0);
-                pixel_color = Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0) * 0.5;
-            } else {
-                pixel_color = ray_color(&ray);
-            }
-
-            let x: u32 = i;
-            let y: u32 = IMAGE_HEIGHT - 1 - j;
+            let pixel_color = ray_color(&ray, &world);
             write_color(&mut imgbuf, x, y, &pixel_color);
         }
     }
@@ -58,19 +55,4 @@ fn main() {
     println!("done!");
 
     HittableList::new();
-}
-
-fn hit_sphere(center: &Point3, radius: f32, ray: &Ray) -> f32 {
-    let oc = ray.origin() - *center;
-    let direction = ray.direction();
-
-    let a: f32 = dot(&direction, &direction);
-    let b: f32 = 2.0 * dot(&oc, &direction);
-    let c: f32 = dot(&oc, &oc) - radius * radius;
-
-    let discriminant: f32 = b * b - 4.0 * a * c;
-    if discriminant > 0.0 {
-        return -b * discriminant.sqrt() / 2.0 * a;
-    }
-    return -1.0;
 }
