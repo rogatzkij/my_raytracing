@@ -18,7 +18,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, r: &ray::Ray, t_min: f32, t_max: f32, rec: &HitRecord) -> Option<HitRecord> {
+    fn hit(&self, r: &ray::Ray, t_min: f32, t_max: f32) -> Option<HitRecord> {
         let oc = r.origin() - self.center;
 
         let a = r.direction().length_squared();
@@ -40,13 +40,13 @@ impl Hittable for Sphere {
             }
         }
 
-        let outward_normal = (r.at(rec.t) - self.center) / self.radius;
         let mut result = HitRecord {
-            p: r.at(rec.t),
-            normal: (rec.p - self.center) / self.radius,
+            p: r.at(root),
+            normal: (r.at(root) - self.center) / self.radius,
             t: root,
             front_face: false,
         };
+        let outward_normal = (r.at(root) - self.center) / self.radius;
         result.set_face_normal(r, &outward_normal);
 
         return Some(result);

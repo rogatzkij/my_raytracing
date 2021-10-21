@@ -1,5 +1,5 @@
 use super::color::Color;
-use super::hittable::{HitRecord, Hittable};
+use super::hittable::Hittable;
 use super::hittable_list::HittableList;
 use super::point3::Point3;
 use super::vec3::{unit_vector, Vec3};
@@ -23,13 +23,13 @@ impl Ray {
     pub fn direction(self) -> Vec3 {
         return self.dir;
     }
-    pub fn at(self, t: f32) -> Point3 {
+    pub fn at(&self, t: f32) -> Point3 {
         return self.orig + self.dir * t;
     }
 }
 
 pub fn ray_color(ray: &Ray, world: &HittableList) -> Color {
-    match world.hit(ray, 0.0, f32::INFINITY, &HitRecord::default()) {
+    match world.hit(ray, 0.0, f32::INFINITY) {
         Some(temp_rec) => {
             return (temp_rec.normal + Color::new(1.0, 1.0, 1.0)) * 0.5;
         }
