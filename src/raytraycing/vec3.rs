@@ -44,6 +44,14 @@ impl ops::Add for Vec3 {
     }
 }
 
+impl ops::AddAssign for Vec3 {
+    fn add_assign(&mut self, other: Self) {
+        self.0 = self.x() + other.x();
+        self.1 = self.y() + other.y();
+        self.2 = self.z() + other.z();
+    }
+}
+
 impl ops::Sub for Vec3 {
     type Output = Self;
 
