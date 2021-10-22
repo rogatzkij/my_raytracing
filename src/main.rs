@@ -2,12 +2,13 @@ mod raytraycing;
 
 use image;
 
-use raytraycing::color::write_color;
-use raytraycing::point3::Point3;
-use raytraycing::ray::{ray_color, Ray};
-
+use raytraycing::camera::Camera;
 use raytraycing::hittable_list::HittableList;
+use raytraycing::point3::Point3;
 use raytraycing::sphere::Sphere;
+
+use raytraycing::color::write_color;
+use raytraycing::ray::ray_color;
 
 fn main() {
     // Image
@@ -23,15 +24,7 @@ fn main() {
     world.add(Box::new(earth));
 
     // Camera
-    const VIEWPORT_HEIGHT: f32 = 2.0;
-    const VIEWPORT_WIDTH: f32 = ASPECT_RATIO * VIEWPORT_HEIGHT;
-    const FOCAL_LENGTH: f32 = 1.0;
-
-    let ORIGIN = Point3::new(0.0, 0.0, 0.0);
-    let HORIZONTAL = Point3::new(VIEWPORT_WIDTH, 0.0, 0.0);
-    let VERTICAL = Point3::new(0.0, VIEWPORT_HEIGHT, 0.0);
-    let LOWER_LEFT_CORNER =
-        ORIGIN - HORIZONTAL / 2.0 - VERTICAL / 2.0 - Point3::new(0.0, 0.0, FOCAL_LENGTH);
+    let camera = Camera::new();
 
     // Build image
     let mut imgbuf = image::ImageBuffer::new(IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -43,10 +36,7 @@ fn main() {
 
             let x: u32 = i;
             let y: u32 = IMAGE_HEIGHT - 1 - j;
-            let ray = Ray::new(
-                ORIGIN,
-                LOWER_LEFT_CORNER + HORIZONTAL * u + VERTICAL * v - ORIGIN,
-            );
+            let ray = camera.get_ray(u, v);
             let pixel_color = ray_color(&ray, &world);
             write_color(&mut imgbuf, x, y, &pixel_color);
         }
